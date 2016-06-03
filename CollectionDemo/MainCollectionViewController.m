@@ -46,9 +46,7 @@ static NSString * const reuseIdentifier = @"MainCell";
         NSLog(@"FINISHED FETCHING URLS");
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-            [self.collectionView performBatchUpdates:^{
-                [self.collectionView reloadData];
-            } completion:^(BOOL finished) {}];
+            [self.collectionView reloadData];
             [self.collectionView layoutIfNeeded];
 
         });
@@ -89,7 +87,7 @@ static NSString * const reuseIdentifier = @"MainCell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     NSLog(@"%lu",_mainImagesURL.count);
-    return _mainImagesURL.count;
+    return _mainImagesURL.count + 2;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -97,14 +95,22 @@ static NSString * const reuseIdentifier = @"MainCell";
     MainCollectionViewCell *myCell = (MainCollectionViewCell *)[collectionView
                                     dequeueReusableCellWithReuseIdentifier:reuseIdentifier
                                     forIndexPath:indexPath];
-    NSData * imageData = [NSData dataWithContentsOfURL:[_mainImagesURL objectAtIndex:indexPath.row]];
-    UIImage * image = [UIImage imageWithData:imageData scale:1];
-    myCell.imageView.image = image;
+//    NSData * imageData = [NSData dataWithContentsOfURL:[_mainImagesURL objectAtIndex:indexPath.row]];
+//    UIImage * image = [UIImage imageWithData:imageData scale:1];
+////    myCell.imageView.image = image;
+    myCell.imageView.contentMode = UIViewContentModeScaleToFill;
     myCell.backgroundColor = [UIColor whiteColor];
     NSLog(@"CELL CREATED: %ld",(long)indexPath.row);
     return myCell;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    // If you need to use the touched cell, you can retrieve it like so
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    
+    NSLog(@"touched cell %@ at indexPath %ld", cell, (long)indexPath.row);
+}
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 //{
 //    UIImage *image = [UIImage imageNamed:[_mainImagesURL objectAtIndex:indexPath.row]];
