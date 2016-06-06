@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface MainCollectionViewController : UICollectionViewController
+#import "DetailViewController.h"
+@interface MainCollectionViewController : UICollectionViewController <DetailViewControllerDelegate, UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) NSMutableArray *mainImagesURL;
+@property (strong, nonatomic) NSMutableArray *mainImages;
+@property (strong, atomic) NSMutableArray *imageHasLoaded;
+@property (strong, atomic) NSMutableArray *imageDownloadLock;
 @end

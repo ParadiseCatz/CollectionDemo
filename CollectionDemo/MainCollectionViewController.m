@@ -8,18 +8,26 @@
 
 #import "MainCollectionViewController.h"
 #import "MainCollectionViewCell.h"
+#import "DetailViewController.h"
+#import "SimpleErrorAlertController.h"
 
 @interface MainCollectionViewController ()
 
 @end
 
 @implementation MainCollectionViewController
+{
+    UIImage *selectedImage;
+}
 
 static NSString * const reuseIdentifier = @"MainCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     _mainImagesURL = [[NSMutableArray alloc] init];
+    _mainImages = [[NSMutableArray alloc] init];
+    _imageHasLoaded = [[NSMutableArray alloc] init];
+    _imageDownloadLock = [[NSMutableArray alloc] init];
     NSString *urlAsString = @"http://version1.api.memegenerator.net/Instances_Select_ByPopular?languageCode=en&pageIndex=0&pageSize=12&urlName=Insanity-Wolf&days=7";
     NSURL *url = [[NSURL alloc] initWithString:urlAsString];
     //NSLog(@"%@", urlAsString);
@@ -32,7 +40,8 @@ static NSString * const reuseIdentifier = @"MainCell";
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *downloadTask = [session dataTaskWithRequest:theRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"FAILED TO FECTH URLS");
+            SimpleErrorAlertController *alertView = [SimpleErrorAlertController alertControllerWithMessage:@"Device has no camera"];
+            [self presentViewController: alertView animated:YES completion:nil];
             return;
         }
         NSError *JSONError;
@@ -41,6 +50,9 @@ static NSString * const reuseIdentifier = @"MainCell";
             NSString *value = [key objectForKey:@"instanceImageUrl"];
             NSURL *url = [NSURL URLWithString:value];
             [_mainImagesURL addObject:url];
+            [_mainImages addObject:[UIImage alloc]];
+            [_imageHasLoaded addObject:@(NO)];
+            [_imageDownloadLock addObject:dispatch_semaphore_create(1)];
             NSLog(@"%@",value);
         }
         NSLog(@"FINISHED FETCHING URLS");
@@ -52,6 +64,9 @@ static NSString * const reuseIdentifier = @"MainCell";
         });
     }];
     [downloadTask resume];
+    
+    self.collectionView.delegate = self;
+    self.collectionView.contentInset = UIEdgeInsetsMake(20, 20, 20, 20);
 
     // Uncomment the following line to preserve selection between presentations
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -87,7 +102,7 @@ static NSString * const reuseIdentifier = @"MainCell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     NSLog(@"%lu",_mainImagesURL.count);
-    return _mainImagesURL.count + 2;
+    return _mainImagesURL.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -95,21 +110,88 @@ static NSString * const reuseIdentifier = @"MainCell";
     MainCollectionViewCell *myCell = (MainCollectionViewCell *)[collectionView
                                     dequeueReusableCellWithReuseIdentifier:reuseIdentifier
                                     forIndexPath:indexPath];
-//    NSData * imageData = [NSData dataWithContentsOfURL:[_mainImagesURL objectAtIndex:indexPath.row]];
-//    UIImage * image = [UIImage imageWithData:imageData scale:1];
-////    myCell.imageView.image = image;
-    myCell.imageView.contentMode = UIViewContentModeScaleToFill;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.frame = CGRectMake(0, 0, 24, 24);
+    [myCell addSubview:spinner];
+    [spinner startAnimating];
+    
+    myCell.imageView.image = nil;
+//    myCell.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, myCell.bounds.size.width, myCell.bounds.size.height)];
+    NSLog(@"%lf",myCell.bounds.size.width);
+    
     myCell.backgroundColor = [UIColor whiteColor];
+    
+    dispatch_queue_t myCustomQueue;
+    myCustomQueue = dispatch_queue_create("com.example.MyCustomQueue", NULL);
+    if ([[_imageHasLoaded objectAtIndex:indexPath.row]  isEqual: @(NO)]) {
+        
+        dispatch_async(myCustomQueue, ^{
+            dispatch_semaphore_wait([_imageDownloadLock objectAtIndex:indexPath.row], DISPATCH_TIME_FOREVER);
+            if ([[_imageHasLoaded objectAtIndex:indexPath.row]  isEqual: @(YES)]) {
+                dispatch_semaphore_signal([_imageDownloadLock objectAtIndex:indexPath.row]);
+                return;
+            }
+            NSData * imageData = [NSData dataWithContentsOfURL:[_mainImagesURL objectAtIndex:indexPath.row]];
+            UIImage * image = [UIImage imageWithData:imageData scale:1];
+            if (image) {
+                [_mainImages replaceObjectAtIndex:indexPath.row withObject:image];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [spinner removeFromSuperview];
+                myCell.imageView.image = image;
+                [_imageHasLoaded replaceObjectAtIndex:indexPath.row withObject:@(YES)];
+            });
+            NSLog(@"IMAGE FETCHED: %ld",(long)indexPath.row);
+            dispatch_semaphore_signal([_imageDownloadLock objectAtIndex:indexPath.row]);
+        });
+    } else {
+        dispatch_async(myCustomQueue, ^{
+            dispatch_semaphore_wait([_imageDownloadLock objectAtIndex:indexPath.row], DISPATCH_TIME_FOREVER);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [spinner removeFromSuperview];
+                myCell.imageView.image = [_mainImages objectAtIndex:indexPath.row];
+                NSLog(@"CONTENT MODE: %ld",(long)myCell.imageView.contentMode);
+
+            });
+            NSLog(@"USE IMAGE FROM STORAGE: %ld",(long)indexPath.row);
+            dispatch_semaphore_signal([_imageDownloadLock objectAtIndex:indexPath.row]);
+        });
+    }
+    myCell.imageView.contentMode = UIViewContentModeScaleToFill;
+    
     NSLog(@"CELL CREATED: %ld",(long)indexPath.row);
     return myCell;
+}
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.width);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // If you need to use the touched cell, you can retrieve it like so
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    
+    MainCollectionViewCell *cell = (MainCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    selectedImage = cell.imageView.image;
+    if ([[_imageHasLoaded objectAtIndex:indexPath.row]  isEqual: @(YES)]) {
+        [self performSegueWithIdentifier: @"showDetail" sender: self];
+    }
     NSLog(@"touched cell %@ at indexPath %ld", cell, (long)indexPath.row);
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:@"showDetail"])
+    {
+        NSLog(@"PASSING IMAGE");
+        // Get reference to the destination view controller
+        DetailViewController *vc = [segue destinationViewController];
+        
+        // Pass any objects to the view controller here, like...
+        vc.retrivedImage = selectedImage;
+        vc.delegate = self;
+    }
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 //{
@@ -117,6 +199,13 @@ static NSString * const reuseIdentifier = @"MainCell";
 //    //You may want to create a divider to scale the size by the way..
 //    return CGSizeMake(image.size.width, image.size.height);
 //}
+
+#pragma mark - DetailViewControllerDelegate
+
+- (void)detailViewControllerDidCancel:(DetailViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 #pragma mark <UICollectionViewDelegate>
 
@@ -148,5 +237,21 @@ static NSString * const reuseIdentifier = @"MainCell";
 	
 }
 */
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (UIEdgeInsets)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(0, 0, 0, 0); // top, left, bottom, right
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    
+    return 0.0;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 0.0;
+}
+
 
 @end
