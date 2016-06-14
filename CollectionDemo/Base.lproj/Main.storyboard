@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
-        <!--Item 2-->
+        <!--Take Picture-->
         <scene sceneID="QCj-Zm-KUU">
             <objects>
                 <viewController id="f4P-mr-BcA" customClass="PhotoViewController" sceneMemberID="viewController">
@@ -17,16 +17,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loading_spinner.gif" translatesAutoresizingMaskIntoConstraints="NO" id="fBh-Z8-i96">
-                                <rect key="frame" x="40" y="108" width="240" height="335"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loading_spinner.gif" translatesAutoresizingMaskIntoConstraints="NO" id="fBh-Z8-i96">
+                                <rect key="frame" x="40" y="57" width="240" height="335"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ntP-mj-MkA">
+                                <rect key="frame" x="98" y="443" width="124" height="30"/>
+                                <state key="normal" title="Take From Photos"/>
+                                <connections>
+                                    <action selector="takeFromPhotos:" destination="f4P-mr-BcA" eventType="touchUpInside" id="aDg-AC-7TU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="24Y-bV-sWC"/>
+                    <tabBarItem key="tabBarItem" title="Take Picture" id="24Y-bV-sWC"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="imageView" destination="fBh-Z8-i96" id="poI-9o-PXj"/>
+                        <outlet property="imageView" destination="fBh-Z8-i96" id="kb9-UW-ssc"/>
                         <segue destination="ldv-Ky-uCh" kind="show" identifier="showDetail" id="CNN-TY-8HU"/>
                     </connections>
                 </viewController>
@@ -39,7 +46,7 @@
             <objects>
                 <tabBarController id="A4q-Ik-3Lj" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="pDF-3c-Dx7">
+                    <tabBar key="tabBar" contentMode="scaleAspectFit" itemPositioning="fill" id="pDF-3c-Dx7">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -60,7 +67,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="PAR-Jz-gUI">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hj4-Jy-EBR">
                             <size key="itemSize" width="125" height="125"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -75,8 +82,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dEv-xU-yCr">
-                                            <rect key="frame" x="0.0" y="0.0" width="137" height="134"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dEv-xU-yCr">
+                                            <rect key="frame" x="3" y="3" width="119" height="119"/>
                                         </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -119,21 +126,25 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loading_spinner.gif" translatesAutoresizingMaskIntoConstraints="NO" id="9w3-pW-BgR">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loading_spinner.gif" translatesAutoresizingMaskIntoConstraints="NO" id="9w3-pW-BgR">
                                 <rect key="frame" x="40" y="116" width="240" height="335"/>
                             </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lTv-up-iFU">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="xzO-Jy-qFY"/>
+                                    <barButtonItem title="Add Logo &amp; Text" id="pHC-dL-PJ7">
+                                        <connections>
+                                            <segue destination="H0q-Au-u7w" kind="show" identifier="AddLogoText" id="qEW-0L-xZQ"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="iRs-dU-IA4"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="yN0-J5-8Ah"/>
-                        <barButtonItem title="Add Logo &amp; Text" id="Qdm-ht-k4S">
-                            <connections>
-                                <segue destination="c4C-gK-nTo" kind="show" id="F6e-Fn-Rxn"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Xl8-mt-TLE"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="qh0-77-hid">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="WPc-HE-rvV">
                             <connections>
@@ -141,29 +152,62 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="9w3-pW-BgR" id="fr8-7j-Pme"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0z3-sg-tws" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="250" y="88"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="Mnn-Gc-xmM">
+        <!--Add Logo Text View Controller-->
+        <scene sceneID="j6g-S3-pmR">
             <objects>
-                <viewController id="c4C-gK-nTo" sceneMemberID="viewController">
+                <viewController id="H0q-Au-u7w" customClass="AddLogoTextViewController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="gRq-Ii-lb9"/>
-                        <viewControllerLayoutGuide type="bottom" id="uLe-ZO-xKy"/>
+                        <viewControllerLayoutGuide type="top" id="R67-my-SIL"/>
+                        <viewControllerLayoutGuide type="bottom" id="lg7-We-UAg"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="RHN-im-BEu">
+                    <view key="view" contentMode="scaleToFill" id="S5a-lQ-Qy6">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W1N-dQ-NkO">
+                                <rect key="frame" x="40" y="163" width="240" height="257"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Your Text Here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wgJ-pe-S5N">
+                                <rect key="frame" x="100" y="277" width="121" height="30"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="dismissKeyboard:" destination="H0q-Au-u7w" eventType="touchUpInside" id="fhj-j8-YrR"/>
+                                    <action selector="eraseText:" destination="H0q-Au-u7w" eventType="editingDidBegin" id="tuu-xu-S1P"/>
+                                </connections>
+                            </textField>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6fu-C8-LKT">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="j9f-H2-Kup"/>
+                                    <barButtonItem systemItem="action" id="4yI-yS-vUW">
+                                        <connections>
+                                            <action selector="shareButtonPressed:" destination="H0q-Au-u7w" id="vog-0z-G4g"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="W1N-dQ-NkO" id="tEo-te-uGc"/>
+                        <outlet property="textField" destination="wgJ-pe-S5N" id="cEF-kC-VNI"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="tW9-Ft-nfG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="r8g-0o-Zly" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="649" y="88"/>
+            <point key="canvasLocation" x="733" y="104"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Lsf-jN-JwX">
@@ -186,6 +230,6 @@
         <image name="loading_spinner.gif" width="200" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="CNN-TY-8HU"/>
+        <segue reference="N1g-Bo-szn"/>
     </inferredMetricsTieBreakers>
 </document>

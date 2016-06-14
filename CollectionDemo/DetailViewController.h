@@ -17,7 +17,7 @@
 
 
 @property (nonatomic, weak) id <DetailViewControllerDelegate> delegate;
-
+ 
 @property (weak, nonatomic) IBOutlet UIImage *retrivedImage;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 

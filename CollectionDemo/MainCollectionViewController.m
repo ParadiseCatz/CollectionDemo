@@ -40,8 +40,10 @@ static NSString * const reuseIdentifier = @"MainCell";
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *downloadTask = [session dataTaskWithRequest:theRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
-            SimpleErrorAlertController *alertView = [SimpleErrorAlertController alertControllerWithMessage:@"Device has no camera"];
-            [self presentViewController: alertView animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                SimpleErrorAlertController *alertView = [SimpleErrorAlertController alertControllerWithMessage:@"Error Fecthing Images"];
+                [self presentViewController: alertView animated:YES completion:nil];
+            });
             return;
         }
         NSError *JSONError;
@@ -145,6 +147,7 @@ static NSString * const reuseIdentifier = @"MainCell";
             dispatch_semaphore_signal([_imageDownloadLock objectAtIndex:indexPath.row]);
         });
     } else {
+        [spinner removeFromSuperview];
         dispatch_async(myCustomQueue, ^{
             dispatch_semaphore_wait([_imageDownloadLock objectAtIndex:indexPath.row], DISPATCH_TIME_FOREVER);
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -165,7 +168,7 @@ static NSString * const reuseIdentifier = @"MainCell";
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.width);
+    return CGSizeMake([[UIScreen mainScreen] bounds].size.width/3 - 15, [[UIScreen mainScreen] bounds].size.width/3 - 15);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -186,7 +189,8 @@ static NSString * const reuseIdentifier = @"MainCell";
     {
         NSLog(@"PASSING IMAGE");
         // Get reference to the destination view controller
-        DetailViewController *vc = [segue destinationViewController];
+        UINavigationController *nav = [segue destinationViewController];
+        DetailViewController *vc = (DetailViewController *)[nav topViewController];
         
         // Pass any objects to the view controller here, like...
         vc.retrivedImage = selectedImage;

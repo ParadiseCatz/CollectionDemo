@@ -7,7 +7,7 @@
 //
 
 #import "DetailViewController.h"
-
+#import "AddLogoTextViewController.h"
 @interface DetailViewController ()
 
 @end
@@ -28,6 +28,20 @@
 - (IBAction)cancel:(id)sender
 {
     [self.delegate detailViewControllerDidCancel:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:@"AddLogoText"])
+    {
+        NSLog(@"PASSING IMAGE TO EDIT");
+        // Get reference to the destination view controller
+        AddLogoTextViewController *vc = [segue destinationViewController];
+        
+        // Pass any objects to the view controller here, like...
+        vc.retrivedImage = self.retrivedImage;
+    }
 }
 
 @end

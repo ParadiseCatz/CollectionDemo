@@ -10,6 +10,6 @@
 #import "DetailViewController.h"
 
 @interface PhotoViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, DetailViewControllerDelegate>
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
 @end

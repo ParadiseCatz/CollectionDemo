@@ -67,11 +67,19 @@
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage * image = [info objectForKey:UIImagePickerControllerEditedImage];
+    UIImage * image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
     // You have the image. You can use this to present the image in the next view like you require in `#3`.
-    self.imageView.image = image;
     [picker dismissViewControllerAnimated:YES completion:NULL];
+    self.imageView.image = image;
+    NSLog(@"IMAGE PICKED");
+    
+}
+- (IBAction)takeFromPhotos:(id)sender {
+    UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imagePicker.delegate = self;
+    [self.parentViewController presentViewController:imagePicker animated:YES completion:NULL];
 }
 
 
